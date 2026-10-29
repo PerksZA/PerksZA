@@ -75,8 +75,8 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <p style="color:var(--mute)">One membership. Exclusive perks from businesses you already love.</p>
 <div id="out" style="display:none"><div class="row" style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="#login">Log in or create account</a><a class="btn alt" href="#perks">Explore Perks</a></div></div>
 <div id="dash" style="display:none"><div class="two">
-<div><div class="card" id="lock" style="display:none;max-width:420px"><h3>Your membership is inactive</h3><p style="color:var(--mute);font-size:.92rem">Pay R79 by EFT to unlock your card. Use this as your payment reference:</p><div id="ref" style="font:600 1.3rem 'Playfair Display',serif;letter-spacing:.1em;margin:8px 0 12px"></div><p id="bank" style="font-size:.95rem;color:var(--text,#e8eefc);white-space:pre-line;line-height:1.7"></p><p style="font-size:.85rem;color:var(--mute);margin:0">Your card unlocks once we've received your payment.</p></div>
-<div id="cardbox" style="display:none"><p class="tag">Membership card</p><div class="mc" id="card"></div><p class="tag" id="act" style="margin-top:10px"></p><p style="margin-top:12px"><button class="btn alt sm" id="full">Show full screen</button></p></div></div>
+<div><div class="card" id="lock" style="display:none;max-width:420px"><h3>Your membership is inactive</h3><p style="color:var(--mute);font-size:.92rem">Pay R79 by EFT to unlock your card. Please use this as your payment reference so we can find your payment:</p><div id="ref" style="font:600 1.3rem 'Playfair Display',serif;letter-spacing:.1em;margin:8px 0 12px"></div><p style="margin:0 0 10px"><button class="btn sm" id="showbank">Show EFT banking details</button></p><p id="bank" style="font-size:.95rem;color:var(--text,#e8eefc);white-space:pre-line;line-height:1.7"></p><p style="margin:0 0 10px"><button class="btn alt sm" id="copybank" style="display:none">Copy details</button> <span id="copied" style="font-size:.85rem;color:var(--mute)"></span></p><p style="font-size:.85rem;color:var(--mute);margin:0">Your card unlocks once we've received your payment.</p></div>
+<div id="cardbox" style="display:none"><p class="tag">Membership card</p><div class="mc" id="card"></div><p class="tag" id="act" style="margin-top:10px"></p><p style="margin-top:12px"><button class="btn alt sm" id="full">Show full screen</button></p><p style="font-size:.85rem;color:var(--mute);margin-top:14px;line-height:1.6">Tip: add PerksZA to your home screen so your card is one tap away. Android: tap the ⋮ menu, then Add to Home screen. iPhone: tap Share, then Add to Home Screen.</p></div></div>
 
 </div>
 <p style="margin-top:26px"><a class="btn" href="#perks">View perks &amp; participating businesses</a> <button class="btn alt" id="out2">Log out</button></p></div>
@@ -85,7 +85,7 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <section class="pg" id="login"><div class="wrap" style="max-width:460px">
 <h1>Welcome</h1>
 <div class="cats"><button id="tin" class="on">Log in</button><button id="tup">Create account</button></div>
-<form id="af"><label id="fnl" style="display:none">Full name<input id="fn" autocomplete="name"></label>
+<form id="af"><label id="fnl" style="display:none">Full name<input id="fn" autocomplete="name"><span style="display:block;font-size:.82rem;color:var(--mute);margin-top:6px;line-height:1.5">Please use your full name (first name and surname). This helps us find your payment and activate your card.</span></label>
 <label>Email<input id="em" type="email" autocomplete="email" required></label>
 <label>Password<input id="pw" type="password" minlength="6" autocomplete="current-password" required></label>
 <label id="cl" style="display:none;grid-template-columns:auto 1fr;align-items:start;gap:10px;font-weight:400"><input type="checkbox" id="cb" style="width:auto;margin-top:5px">I agree to PerksZA storing my name, email and savings so it can run my membership.</label>
@@ -12580,7 +12580,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
 <script>
 
 var SB_URL="https://sqhxjjcmtqkwjhjeadjk.supabase.co",SB_KEY="sb_publishable_mMrAkdMZtz4J7NRRGNdlFw_ZjT08v2r";
-var BANK="Bank: FNB\nAccount type: Easy account\nAccount number: 62772432143\nBranch code: 250655";
+var BANK="";
 var E="perksza2@gmail.com",sb=supabase.createClient(SB_URL,SB_KEY),$=function(i){return document.getElementById(i)};
 var U=null,PR=null,MS=null,PT=null,back="#home",mode="in",ready=false,P=[],cats=["All"],cur="All",AD=[];
 var VALID=/^PZA[A-HJ-NP-Z2-9]{8}$/;
@@ -12612,7 +12612,14 @@ async function renderHome(){
  if(!PR){$("hi").textContent="Your PerksZA";return}
  $("hi").textContent="Hi, "+(PR.full_name||"member").split(" ")[0];
  var on=isActive();$("lock").style.display=on?"none":"block";$("cardbox").style.display=on?"block":"none";
- $("ref").textContent=fmt(PR.member_code);$("bank").textContent=BANK;
+ $("ref").textContent=fmt(PR.member_code);
+ $("showbank").onclick=async function(){var b=$("showbank");b.disabled=true;b.textContent="Loading...";
+  try{var r=await sb.from("settings").select("value").eq("key","bank_details").maybeSingle();
+   var t=(r.data&&r.data.value)?r.data.value:"Banking details are not available right now. Please contact us at perksza2@gmail.com.";
+   $("bank").textContent=t;b.style.display="none";
+   if(r.data&&r.data.value){$("copybank").style.display="";$("copybank").onclick=function(){var txt=t+"\nReference: "+fmt(PR.member_code);
+     (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){$("copied").textContent="Copied"},function(){$("copied").textContent="Could not copy. Please copy by hand."})}}
+  }catch(e){$("bank").textContent="Could not load banking details. Please try again.";b.disabled=false;b.textContent="Show EFT banking details"}};
  if(on){$("card").innerHTML=cardHtml(false);$("card2").innerHTML=cardHtml(true);
   document.querySelectorAll(".bc").forEach(function(el){var c=document.createElement("canvas");JsBarcode(c,PR.member_code,{format:"CODE128",displayValue:false,height:80,margin:12,width:3,lineColor:"#000000",background:"#ffffff"});el.src=c.toDataURL("image/png")});tickClock();
   $("act").textContent="R79/month · Active until "+nice(MS.paid_until)}
@@ -12646,7 +12653,7 @@ $("out2").onclick=async function(){await sb.auth.signOut();await loadUser();loca
 sb.auth.onAuthStateChange(function(){setTimeout(loadUser,0)});
 
 /* card overlay */
-$("full").onclick=function(){$("ov").classList.add("on")};$("ov").onclick=function(){$("ov").classList.remove("on")};
+var WL=null;$("full").onclick=async function(){$("ov").classList.add("on");try{if(navigator.wakeLock)WL=await navigator.wakeLock.request("screen")}catch(e){}};$("ov").onclick=function(){$("ov").classList.remove("on");try{if(WL){WL.release();WL=null}}catch(e){}};
 
 /* admin */
 async function loadAdmin(){
