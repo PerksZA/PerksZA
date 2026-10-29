@@ -148,7 +148,7 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <video id="vid" playsinline muted style="width:100%;border-radius:14px;display:none;background:#000"></video><canvas id="cv" style="display:none"></canvas>
 <p><button class="btn" id="cam">Scan card</button></p>
 <form id="mf2" style="margin-bottom:16px"><label>Or type the member code<input id="mcd" autocapitalize="characters" placeholder="PZA-XXXX-XXXX"></label><button class="btn alt sm" type="submit">Check code</button></form>
-<div class="card" id="res" style="display:none"><h3 id="rn"></h3><p id="rs"></p>
+<div class="card" id="res" style="display:none"><h3 id="rn" style="font-size:1.9rem"></h3><p id="rs"></p>
 <form id="bf"><label>Bill total (R)<input id="bt" type="number" step="0.01" min="0.01" required></label><button class="btn" type="submit">Confirm</button></form></div>
 <p class="msg" id="sm"></p>
 </div></div></section>
@@ -12674,8 +12674,8 @@ function tick(){if(!stream)return;
 async function check(code){curCode=null;$("res").style.display="block";$("bf").style.display="none";$("rn").textContent="Checking…";$("rs").textContent="";
  var r=await sb.rpc("lookup_member",{p_code:code});if(r.error){$("rn").textContent="Error";$("rs").textContent=r.error.message;return}
  var d=r.data;if(!d.found){$("rn").textContent="Code not recognised";return}
- $("rn").textContent=d.name||"Member";$("rs").textContent=d.active?"✓ Active member":"✗ Membership inactive. No saving can be recorded.";
- if(d.active){curCode=code;$("bf").style.display="grid";$("bt").value="";$("bt").focus()}}
+ $("rn").textContent=d.name||"Member";$("rs").textContent=!d.active?"✗ Membership inactive. No saving can be recorded.":d.used_today?"✗ Already used their perk here today.":"✓ Active member. Check this name matches the person in front of you.";
+ if(d.active&&!d.used_today){curCode=code;$("bf").style.display="grid";$("bt").value="";$("bt").focus()}}
 $("cam").onclick=startCam;
 $("mf2").onsubmit=function(e){e.preventDefault();var k=norm($("mcd").value);if(!VALID.test(k)){setMsg("sm","That member code isn't valid.",1);return}setMsg("sm","");stopCam();check(k)};
 $("bf").onsubmit=async function(e){e.preventDefault();if(!curCode)return;
