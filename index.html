@@ -72,7 +72,7 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <div id="dash" style="display:none"><div class="two">
 <div><div class="card" id="lock" style="display:none;max-width:420px"><h3>Your membership is inactive</h3><p style="color:var(--mute);font-size:.92rem">Pay R79 by EFT to unlock your card. Use this as your payment reference:</p><div id="ref" style="font:600 1.3rem 'Playfair Display',serif;letter-spacing:.1em;margin:8px 0 12px"></div><p id="bank" style="font-size:.9rem;color:var(--mute)"></p><p style="font-size:.85rem;color:var(--mute);margin:0">Your card unlocks once we've received your payment.</p></div>
 <div id="cardbox" style="display:none"><p class="tag">Membership card</p><div class="mc" id="card"></div><p class="tag" id="act" style="margin-top:10px"></p><p style="margin-top:12px"><button class="btn alt sm" id="full">Show full screen</button></p></div></div>
-<div class="card"><p class="tag">Total saved with PerksZA</p><div class="big" id="tot">R0.00</div><p style="color:var(--mute);font-size:.9rem">Savings are added automatically each time a PerksZA partner scans your card.</p><ul class="l" id="sl"></ul></div>
+
 </div>
 <p style="margin-top:26px"><a class="btn" href="#perks">View perks &amp; participating businesses</a> <button class="btn alt" id="out2">Log out</button></p></div>
 </div></section>
@@ -153,7 +153,7 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <p class="msg" id="sm"></p>
 </div></div></section>
 </main>
-<div class="biz"><div class="wrap"><h2>Own a business?</h2><p style="color:var(--mute)">See how PerksZA works for businesses and how to join.</p><a class="btn" href="#business">Find out more &amp; join</a></div></div>
+<div class="biz"><div class="wrap"><h2>Own a business?</h2><p style="color:var(--mute)">Want to offer PerksZA members a perk? Send us an email and we'll get you set up.</p><p><a href="mailto:perksza2@gmail.com" style="font-size:1.15rem;font-weight:600">perksza2@gmail.com</a></p></div></div>
 <footer><div class="wrap">© 2026 PerksZA · South Africa · <a href="#scan">Partner scan</a></div></footer>
 <div id="ov"><div class="mc" id="card2"></div></div>
 
@@ -12609,9 +12609,7 @@ async function renderHome(){
  if(on){$("card").innerHTML=cardHtml(false);$("card2").innerHTML=cardHtml(true);
   document.querySelectorAll(".bc").forEach(function(el){JsBarcode(el,PR.member_code,{format:"CODE128",displayValue:false,height:50,margin:0,width:2});fit(el)});
   $("act").textContent="R79/month · Active until "+nice(MS.paid_until)}
- var r=await sb.from("scans").select("saving,created_at,partners(name)").order("created_at",{ascending:false}),d=r.data||[];
- $("tot").textContent=money(d.reduce(function(a,x){return a+Number(x.saving)},0));
- $("sl").innerHTML=d.length?d.slice(0,5).map(function(x){return '<li><span>'+esc(x.partners&&x.partners.name)+' <span class="tag">'+new Date(x.created_at).toLocaleDateString("en-ZA",{day:"numeric",month:"short"})+'</span></span><strong>'+money(x.saving)+'</strong></li>'}).join(""):'<li><span style="color:var(--mute)">No savings yet. Show your card at a PerksZA partner.</span></li>'}
+}
 
 /* perks */
 var EX=[["Example Café","Food & Restaurants","10% off your bill"],["Example Beauty Studio","Beauty","Free add-on treatment"],["Example Auto Care","Automotive","Free car wash with a service"],["Example Cinema Club","Entertainment","2-for-1 on Tuesdays"],["Example Gym","Fitness","Free first week"],["Example Boutique","Shopping","15% off one item"],["Example Play Park","Family","Kids play free with an adult"],["Example Repairs","Services","10% off labour"]];
@@ -12632,7 +12630,7 @@ function setMode(m){mode=m;$("tin").className=m=="in"?"on":"";$("tup").className
 $("tin").onclick=function(){setMode("in")};$("tup").onclick=function(){setMode("up")};
 $("af").onsubmit=async function(e){e.preventDefault();setMsg("amsg","Please wait…");var em=$("em").value.trim(),pw=$("pw").value,r;
  if(mode=="up"){if(!$("cb").checked){setMsg("amsg","Please tick the box to continue.",1);return}
-  r=await sb.auth.signUp({email:em,password:pw,options:{data:{full_name:$("fn").value.trim()}}});
+  r=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:location.origin+location.pathname,data:{full_name:$("fn").value.trim()}}});
   if(r.error){setMsg("amsg",r.error.message,1);return}
   if(!r.data.session){setMsg("amsg","Account created. Check your email to confirm it, then log in.");return}
  }else{r=await sb.auth.signInWithPassword({email:em,password:pw});if(r.error){setMsg("amsg",r.error.message,1);return}}
