@@ -75,7 +75,7 @@ nav.open{display:flex}nav a{padding:12px 0;border-bottom:1px solid var(--line)}n
 <p style="color:var(--mute)">One membership. Exclusive perks from businesses you already love.</p>
 <div id="out" style="display:none"><div class="row" style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="#login">Log in or create account</a><a class="btn alt" href="#perks">Explore Perks</a></div></div>
 <div id="dash" style="display:none"><div class="two">
-<div><div class="card" id="lock" style="display:none;max-width:420px"><h3>Your membership is inactive</h3><p style="color:var(--mute);font-size:.92rem">Pay R79 by EFT to unlock your card. Use this as your payment reference:</p><div id="ref" style="font:600 1.3rem 'Playfair Display',serif;letter-spacing:.1em;margin:8px 0 12px"></div><p id="bank" style="font-size:.9rem;color:var(--mute)"></p><p style="font-size:.85rem;color:var(--mute);margin:0">Your card unlocks once we've received your payment.</p></div>
+<div><div class="card" id="lock" style="display:none;max-width:420px"><h3>Your membership is inactive</h3><p style="color:var(--mute);font-size:.92rem">Pay R79 by EFT to unlock your card. Use this as your payment reference:</p><div id="ref" style="font:600 1.3rem 'Playfair Display',serif;letter-spacing:.1em;margin:8px 0 12px"></div><p id="bank" style="font-size:.95rem;color:var(--text,#e8eefc);white-space:pre-line;line-height:1.7"></p><p style="font-size:.85rem;color:var(--mute);margin:0">Your card unlocks once we've received your payment.</p></div>
 <div id="cardbox" style="display:none"><p class="tag">Membership card</p><div class="mc" id="card"></div><p class="tag" id="act" style="margin-top:10px"></p><p style="margin-top:12px"><button class="btn alt sm" id="full">Show full screen</button></p></div></div>
 
 </div>
@@ -12580,7 +12580,7 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
 <script>
 
 var SB_URL="https://sqhxjjcmtqkwjhjeadjk.supabase.co",SB_KEY="sb_publishable_mMrAkdMZtz4J7NRRGNdlFw_ZjT08v2r";
-var BANK="Banking details: please contact us and we'll send them to you."; // <- put your EFT banking details here
+var BANK="Account name: Ankia Venter\nBank: FNB\nAccount type: Easy account\nAccount number: 62772432143\nBranch code: 250655";
 var E="perksza2@gmail.com",sb=supabase.createClient(SB_URL,SB_KEY),$=function(i){return document.getElementById(i)};
 var U=null,PR=null,MS=null,PT=null,back="#home",mode="in",ready=false,P=[],cats=["All"],cur="All",AD=[];
 var VALID=/^PZA[A-HJ-NP-Z2-9]{8}$/;
